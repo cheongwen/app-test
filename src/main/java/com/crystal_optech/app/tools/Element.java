@@ -28,7 +28,7 @@ public class Element {
 	ByType type;
 	
 	public enum ByType { 
-		by, xpath, linkText, id, name, className
+		xpath, linkText, id, name, className
 	};
 
 	public Element() {
@@ -78,6 +78,9 @@ public class Element {
 			break;
 		case className:
 			e = (MobileElement) driver.findElement(By.className(address));
+			break;
+		case linkText:
+			e = (MobileElement) driver.findElement(By.linkText(address));
 			break;
 		default:
 			e = (MobileElement) driver.findElement(By.id(address));

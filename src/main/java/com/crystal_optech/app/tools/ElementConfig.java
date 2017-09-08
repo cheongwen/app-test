@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @Configuration
-@PropertySource(value = {"classpath:element.list"},encoding="utf-8")
+@PropertySource(value = {"classpath:element.properties"},encoding="utf-8")
 public class ElementConfig {
 
 	static Environment evn;
