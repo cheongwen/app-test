@@ -6,7 +6,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
 /**
- * 根据配置文件获取配置属性
+ * 根据配置文件获取系统配置属性
  * @author chang.lu
  *
  */
@@ -16,10 +16,13 @@ import org.springframework.stereotype.Component;
 @PropertySource("classpath:config.properties")
 public class Config {
 	
+	public final static String ANDROID = "Android";
+	public final static String IOS = "IOS";
+	
 	static Environment evn ;
 	
-	public Config(Environment evn) {
-		this.evn = evn;
+	public Config(Environment evn1) {
+		evn = evn1;
 	}
 	
 	/**

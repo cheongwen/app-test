@@ -1,7 +1,5 @@
 package com.crystal_optech.app.appium;
 
-import com.crystal_optech.app.tools.BaseTools;
-
 /**
  * Windows平台Appium管理类
  * @author chang.lu
@@ -9,10 +7,6 @@ import com.crystal_optech.app.tools.BaseTools;
  */
 
 public class WindowsManager extends ServerManager {
-
-	public WindowsManager() {
-
-	}
 
 	public void stop() {
 		kill();
@@ -34,8 +28,7 @@ public class WindowsManager extends ServerManager {
 		try {
 			Thread.sleep(1000);
 			while (!run) {
-				if (run) {
-					LOG.info("[Windows Appium]开启");
+				if (run || error) {
 					break;
 				}
 				Thread.sleep(100);
@@ -43,7 +36,12 @@ public class WindowsManager extends ServerManager {
 		} catch (Exception e) {
 			// TODO: handle exception
 		}
-		LOG.info("[Windows Appium]开始执行case");
+		if (error) {
+			LOG.info("[Windows Appium]启动失败...");
+		}else {
+			LOG.info("[Windows Appium]启动成功...");
+		}
+		
 	}
 
 	public void kill() {

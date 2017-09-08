@@ -1,13 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
-<suite name="Suite" parallel="classes" thread-count="3">
-	<listeners>
-		<listener class-name="com.crystal_optech.app.tools.ScreenshotListener" />
-	</listeners>
+<suite name="Suite" parallel="classes" thread-count="1">
 	<test verbose="2" preserve-order="true" name="TestDebug">
-		<parameter name="driverName" value="chrome" />
 		<classes>
-			<class name="com.crystal_optech.app.testcase.TestOne" />
+			<class name="com.crystal_optech.app.testcase.test1" />
+			<class name="com.crystal_optech.app.testcase.test2" />
 		</classes>
 	</test> <!-- Test -->
 </suite> <!-- Suite -->

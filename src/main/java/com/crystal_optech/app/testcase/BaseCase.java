@@ -1,32 +1,49 @@
 package com.crystal_optech.app.testcase;
 
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.gargoylesoftware.htmlunit.javascript.host.canvas.ext.WEBGL_compressed_texture_s3tc;
+import com.crystal_optech.app.tools.BaseTools;
+import com.crystal_optech.app.tools.DriverTools;
+import com.crystal_optech.app.tools.Element;
 
-public class BaseCase {
+import io.appium.java_client.AppiumDriver;
+
+/**
+ * 测试基础类，提供封装方法
+ * 建议每个测试用例都继承该类
+ * @author chang.lu
+ *
+ */
+
+public class BaseCase extends Element {
 	
-	WebDriver driver;
+	AppiumDriver<?> driver ;
 
 	private static final Logger LOG = LoggerFactory.getLogger(BaseCase.class);
 	
-	public BaseCase(WebDriver driver) {
-		this.driver = driver;
+	public BaseCase() {
+		this.driver = DriverTools.getDriver();
 	}
 	
-	public static void main(String[] args) {
-		LOG.info("test log");
-		LOG.debug("TEST LOG");
-		LOG.error("TEST LOGSSSSSS");
+	public BaseCase(AppiumDriver<?> d) {
+		this.driver = d;
 	}
 	
-	private void skipHelloPage() {
-		WebElement tiaoguo = driver.findElement(By.id("com.crystal_optech.auditos:id/image"));
-		tiaoguo.click();
+	/**
+	 * 跳过欢迎页面
+	 */
+	public void skipHelloPage() {
+		BaseTools.wait(500);
+		get("跳过").click();
+	}
+	
+	/**
+	 * 打开设置主页面
+	 */
+	public void OpenSettingPage(){
+		skipHelloPage();
+		get("settingPage").click();
 	}
 	
 	

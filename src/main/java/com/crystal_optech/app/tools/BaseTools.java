@@ -8,17 +8,19 @@ import java.util.Date;
 
 import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.OutputType;
-import org.openqa.selenium.WebElement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.crystal_optech.app.testcase.BaseCase;
 
-import io.appium.java_client.android.AndroidDriver;
+/**
+ * 测试工具
+ * @author chang.lu
+ *
+ */
 
 public class BaseTools {
 
-	private static final Logger LOG = LoggerFactory.getLogger(BaseCase.class);
+	private static final Logger LOG = LoggerFactory.getLogger(BaseTools.class);
 	
 	public static void wait(int time) {
 		if (time>0) {
@@ -37,8 +39,12 @@ public class BaseTools {
 		return name;
 	}
 	
+	/**
+	 * 截图并保存
+	 * @param picName
+	 */
 	public static void captureScreenShot(String picName) {
-		File srcFile = ((AndroidDriver<WebElement>)(DriverTools.getDriver())).getScreenshotAs(OutputType.FILE);
+		File srcFile = DriverTools.getDriver().getScreenshotAs(OutputType.FILE);
         File location = new File("screenshots");
         File targetFile = new File(location.getAbsolutePath()+File.separator+picName+BaseTools.dateName()+".png");
         LOG.info("[截图]保存地址：" + targetFile.getPath());

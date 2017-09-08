@@ -3,6 +3,7 @@ package com.crystal_optech.app.tools;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import org.apache.commons.collections.ResettableIterator;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.CapabilityType;
@@ -18,6 +19,7 @@ import com.crystal_optech.app.appium.WindowsManager;
 import com.crystal_optech.app.testcase.BaseCase;
 import com.crystal_optech.app.tools.Config;
 
+import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.ios.IOSDriver;
 import io.appium.java_client.remote.MobileCapabilityType;
@@ -38,8 +40,13 @@ public class DriverTools {
 	
 	public DriverTools() {
 	}
+	
+	public static void reset() {
+		androidDriver = null;
+		iosDriver = null;
+	}
 
-	public static WebDriver getDriver() {
+	public static AppiumDriver<?> getDriver() {
 		if ("Android".equals(Config.get("auto.platform","Android"))) {
 			if (androidDriver==null) {
 				LOG.info("创建Android Driver");
@@ -120,7 +127,7 @@ public class DriverTools {
 		try {
 			androidDriver = new AndroidDriver(new URL("http://127.0.0.1:" + port + "/wd/hub"), capabilities);
 		} catch (MalformedURLException e) {
-			e.printStackTrace();
+			LOG.error("连接Appium Server出错...",e);
 		}
 		return androidDriver;
 	}

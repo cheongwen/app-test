@@ -9,17 +9,15 @@ import java.io.Reader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.crystal_optech.app.testcase.BaseCase;
-
 /**
- * Appium Server，执行命令获取输出信息
+ * Appium Server 执行命令获取输出信息
  * @author chang.lu
  *
  */
 
 public class RunCommand implements Runnable {
 	
-	private static final Logger LOG = LoggerFactory.getLogger(RunCommand.class);
+	private static final Logger LOG = LoggerFactory.getLogger(RunCommand.class.getSimpleName());
 
 	String cmd ;
 	
@@ -51,13 +49,16 @@ public class RunCommand implements Runnable {
 	       		String line = null;
 	       		try {
 	       			while((line=bf.readLine())!=null) {
-	       				System.out.println("[Windows Appium]"+line);
+	       				LOG.info("[Appium]"+line);
 	       				if (line.contains("started")) {
 	       					ServerManager.run = true;
 	       				}
+	       				if (line.contains("Could not start REST")) {
+							ServerManager.error = true;
+						}
 	       			}
 	       		} catch (IOException e) {
-	       			e.printStackTrace();
+	       			LOG.error("[Appium]读取appium server日志失败");
 	       		}
 	       	}
 		}).start();

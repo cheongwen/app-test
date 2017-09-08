@@ -26,12 +26,12 @@ public class LinuxManager extends ServerManager {
 	}
 	
 	private void run(String udid, int port) {
-		System.out.println("run " + udid + " Appium Server in port " + port + "...");
+		LOG.info("run " + udid + " Appium Server in port " + port + "...");
         //TODO
 	}
 	
 	public void kill(){
-        System.out.println("kill Appium Server task ...");
+		LOG.info("kill Appium Server task ...");
         //TODO
     }
 	

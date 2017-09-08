@@ -3,11 +3,13 @@ package com.crystal_optech.app.tools;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.DependsOn;
 import org.springframework.core.env.Environment;
 
-import com.crystal_optech.app.appium.ServerManager;
-
+/**
+ * Spring 配置类
+ * @author chang.lu
+ *
+ */
 
 @ComponentScan
 public class SpringConfig {
@@ -20,4 +22,8 @@ public class SpringConfig {
 		return new Config(evn);
 	}
 	
+	@Bean
+	public ElementConfig elementConfig() {
+		return new ElementConfig(evn);
+	}
 }

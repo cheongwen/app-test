@@ -4,20 +4,30 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-import com.crystal_optech.app.testcase.BaseCase;
+/**
+ * Appium Server 管理类
+ * @author chang.lu
+ *
+ */
 
 @Component
 public class ServerManager {
 	
 	static final Logger LOG = LoggerFactory.getLogger(ServerManager.class);
 	
+	/**
+	 * Appium Server 启动标识
+	 */
 	volatile static boolean run = false;
+	/**
+	 * Appium Server 执行报错标识
+	 */
+	volatile static boolean error = false;
 	
-	public void stop() {
-	}
-	public void start() {
-	}
-	public void restart() {
-	}
+	public void stop() {}
+	
+	public void start() {}
+	
+	public void restart() {}
 	
 }

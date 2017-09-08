@@ -17,6 +17,7 @@
 		<slf4j.version>1.7.25</slf4j.version>
 		<log4j.version>1.2.17</log4j.version>
 		<testng.version>6.11</testng.version>
+		<appium.version>4.1.2</appium.version>
 	</properties>
 
 	<dependencies>
@@ -25,7 +26,7 @@
 		<dependency>
 			<groupId>io.appium</groupId>
 			<artifactId>java-client</artifactId>
-			<version>5.0.0</version>
+			<version>${appium.version}</version>
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/org.seleniumhq.selenium/selenium-server 
 			<dependency> <groupId>org.seleniumhq.selenium</groupId> <artifactId>selenium-server</artifactId> 
