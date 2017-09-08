@@ -3,15 +3,19 @@ package com.crystal_optech.app.tools;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Component;
 
 import com.crystal_optech.app.appium.ServerManager;
 import com.crystal_optech.app.appium.WindowsManager;
+import com.crystal_optech.app.testcase.BaseCase;
 import com.crystal_optech.app.tools.Config;
 
 import io.appium.java_client.android.AndroidDriver;
@@ -27,29 +31,41 @@ import io.appium.java_client.remote.MobileCapabilityType;
 
 public class DriverTools {
 
-	String ANDROID = "Android";
-	String IOS = "IOS";
+	private static final Logger LOG = LoggerFactory.getLogger(DriverTools.class);
 
-	public IOSDriver<?> iosDriver;
-	public AndroidDriver<?> androidDriver;
+	static IOSDriver<?> iosDriver;
+	static AndroidDriver<?> androidDriver;
 	
 	public DriverTools() {
-		if (ANDROID.equals(Config.get("auto.platform"))) {
-			createAndroidDriver(Config.get("auto.udid"),Config.get("auto.port"),Config.get("auto.appPackage"),Config.get("auto.appActivity"));
-		} else if (IOS.equals(Config.get("auto.platform"))) {
-			createIOSDriver();
-		} else {
-			createAndroidDriver(Config.get("auto.udid"),Config.get("auto.port"),Config.get("auto.appPackage"),Config.get("auto.appActivity"));
-		}
-
 	}
 
+	public static WebDriver getDriver() {
+		if ("Android".equals(Config.get("auto.platform","Android"))) {
+			if (androidDriver==null) {
+				LOG.info("创建Android Driver");
+				createAndroidDriver(Config.get("auto.udid"),Config.get("auto.port"),Config.get("auto.appPackage"),Config.get("auto.appActivity"));
+			}
+			return androidDriver;
+		} else if ("IOS".equals(Config.get("auto.platform"))) {
+			if (iosDriver!=null) {
+				LOG.info("创建IOS Driver");
+				createIOSDriver();
+			}
+			return iosDriver;
+		} else {
+			if (androidDriver==null) {
+				LOG.info("创建Android Driver");
+				createAndroidDriver(Config.get("auto.udid"),Config.get("auto.port"),Config.get("auto.appPackage"),Config.get("auto.appActivity"));
+			}
+			return androidDriver;
+		}
+	}
 	
 	/**
 	 * 未完成，不可使用
 	 * @return
 	 */
-	private IOSDriver<?> createIOSDriver() {
+	private static IOSDriver<?> createIOSDriver() {
 		DesiredCapabilities capabilities = new DesiredCapabilities();
 		// 使用的自动化测试引擎：Appium(默认)或Selendroid
 		capabilities.setCapability("automationName", "Appium");
@@ -68,7 +84,7 @@ public class DriverTools {
 		return iosDriver;
 	}
 
-	private AndroidDriver<?> createAndroidDriver(String udid, String port, String appPackage, String appActivity) {
+	private static AndroidDriver<?> createAndroidDriver(String udid, String port, String appPackage, String appActivity) {
 		DesiredCapabilities capabilities = new DesiredCapabilities();
 		// 使用的自动化测试引擎：Appium(默认)或Selendroid
 		capabilities.setCapability("automationName", "Appium");

@@ -22,7 +22,7 @@ public class ServerManagerTest extends AbstractTestNGSpringContextTests {
 		ServerManager winServer = new WindowsManager();
 		winServer.start();
 		DriverTools divers = new DriverTools();
-		AndroidDriver<WebElement> driver = (AndroidDriver<WebElement>) divers.androidDriver;
+		AndroidDriver<WebElement> driver = (AndroidDriver<WebElement>) divers.getDriver();
 		try {
 			BaseTools.wait(500);
 			throw new Exception();

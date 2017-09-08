@@ -3,11 +3,11 @@ package com.crystal_optech.app.testcase;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 
-import com.crystal_optech.app.appium.DriverFactory;
 import com.crystal_optech.app.appium.ServerManager;
 import com.crystal_optech.app.appium.WindowsManager;
 import com.crystal_optech.app.tools.BaseTools;
 import com.crystal_optech.app.tools.Config;
+import com.crystal_optech.app.tools.DriverTools;
 
 import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.android.AndroidElement;
@@ -22,13 +22,13 @@ public class App extends BaseTools{
     {
     	String udid = Config.get("auto.udid");
         int port = Integer.valueOf(Config.get("auto.port"));
-    	ServerManager winServer = new WindowsManager(udid, port);
+    	ServerManager winServer = new WindowsManager();
         winServer.start();
         String appPackage = "com.crystal_optech.auditos";
         String appActivity = "com.crystal_optech.auditos.LogoActivity";
         try {
-			DriverFactory driverf = new DriverFactory();
-			AndroidDriver<AndroidElement> driver = (AndroidDriver<AndroidElement>) driverf.createAndroidDriver(udid, port, appPackage, appActivity);
+			
+			AndroidDriver<AndroidElement> driver = (AndroidDriver<AndroidElement>)DriverTools.getDriver();
 			try {
 				wait(500);
 				AndroidElement tiaoguo = driver.findElement(By.id("com.crystal_optech.auditos:id/image"));

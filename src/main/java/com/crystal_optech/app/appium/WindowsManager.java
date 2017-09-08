@@ -31,12 +31,17 @@ public class WindowsManager extends ServerManager {
 		LOG.info("[Windows Appium]run Appium Server");
 		String command = "appium.cmd";
 		new Thread(new RunCommand(command)).start();
-		while (!run) {
-			if (run) {
-				LOG.info("[Windows Appium]开启");
-				break;
+		try {
+			Thread.sleep(1000);
+			while (!run) {
+				if (run) {
+					LOG.info("[Windows Appium]开启");
+					break;
+				}
+				Thread.sleep(100);
 			}
-			BaseTools.wait(100);
+		} catch (Exception e) {
+			// TODO: handle exception
 		}
 		LOG.info("[Windows Appium]开始执行case");
 	}

@@ -9,7 +9,7 @@ import com.crystal_optech.app.testcase.BaseCase;
 @Component
 public class ServerManager {
 	
-	static final Logger LOG = LoggerFactory.getLogger(BaseCase.class);
+	static final Logger LOG = LoggerFactory.getLogger(ServerManager.class);
 	
 	volatile static boolean run = false;
 	
