@@ -8,6 +8,8 @@ import com.crystal_optech.app.tools.DriverTools;
 import com.crystal_optech.app.tools.Element;
 
 import io.appium.java_client.AppiumDriver;
+import io.appium.java_client.MobileElement;
+import io.appium.java_client.TouchAction;
 
 /**
  * 测试基础类，提供封装方法
@@ -34,8 +36,19 @@ public class BaseCase extends Element {
 	 * 跳过欢迎页面
 	 */
 	public void skipHelloPage() {
-		BaseTools.wait(500);
+		BaseTools.wait(3000);
 		get("跳过").click();
+	}
+	
+	/**
+	 * 滑动欢迎页面
+	 */
+	public void swipeHelloPage() {
+		BaseTools.wait(3000);
+		for (int i = 0; i < 4; i++) {
+			BaseTools.wait(1000);
+			swipeToLeft();
+		}
 	}
 	
 	/**
@@ -43,8 +56,7 @@ public class BaseCase extends Element {
 	 */
 	public void OpenSettingPage(){
 		skipHelloPage();
-		get("settingPage").click();
+		get("Main-HUD设置").click();
 	}
-	
-	
+		
 }

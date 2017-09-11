@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @Configuration
-@PropertySource("classpath:config.properties")
+@PropertySource(value = {"classpath:config.properties"},encoding="utf-8")
 public class Config {
 	
 	public final static String ANDROID = "Android";

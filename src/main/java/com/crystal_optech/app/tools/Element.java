@@ -1,10 +1,18 @@
 package com.crystal_optech.app.tools;
 
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.TimeoutException;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.ExpectedCondition;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.thoughtworks.selenium.webdriven.commands.WaitForPageToLoad;
 
 import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.MobileElement;
@@ -23,21 +31,23 @@ public class Element {
 	private TouchAction action;
 
 	AppiumDriver<?> driver;
-	
+
 	String address;
 	ByType type;
-	
-	public enum ByType { 
-		xpath, linkText, id, name, className
+
+	public enum ByType {
+		xpath, linkText, id, name, className, desc
 	};
 
 	public Element() {
 		driver = DriverTools.getDriver();
 		action = new TouchAction(driver);
+//		driver.manage().timeouts().pageLoadTimeout(Integer.getInteger(Config.get("timeout", "1000")), TimeUnit.SECONDS);
 	}
-	
+
 	/**
 	 * 根据配置获取元素查找方式及元素定位属性
+	 * 
 	 * @param ename
 	 * @return
 	 */
@@ -47,28 +57,63 @@ public class Element {
 		if (list != null) {
 			String[] lists = list.split("\\|\\|");
 			if (lists.length == 2) {
-				type= getByType(lists[0]);
+				type = getByType(lists[0]);
 				address = lists[1];
 				me = find();
 			} else {
-				LOG.error("[key="+ename+"]的配置不正确，请检查");
+				LOG.error("[key=" + ename + "]的配置不正确，请检查");
 			}
-		}else {
-			LOG.error("没有获取到[key="+ename+"]的元素");
+		} else {
+			LOG.error("没有获取到[key=" + ename + "]的元素");
 		}
-		
+
 		return me;
+	}
+
+	/**
+	 * 查找元素，并返回
+	 * 
+	 * @return
+	 */
+	private MobileElement find(By by) {
+		MobileElement e = (MobileElement) driver.findElement(by);
+		return e;
+	}
+	
+	private By whichBy() {
+		By by ;
+		switch (type) {
+		case xpath:
+			by = By.xpath(address);
+			break;
+		case id:
+			by = By.id(address);
+			break;
+		case name:
+			by = By.name(address);
+			break;
+		case className:
+			by = By.className(address);
+			break;
+		case linkText:
+			by = By.linkText(address);
+			break;
+		default:
+			by = By.id(address);
+		}
+		return by;
 	}
 	
 	/**
 	 * 查找元素，并返回
+	 * 
 	 * @return
 	 */
-	public MobileElement find() {
-		MobileElement e=null;
+	private MobileElement find() {
+		MobileElement e = null;
 		switch (type) {
 		case xpath:
-			e = (MobileElement) driver.findElement(By.xpath(address));	
+			e = (MobileElement) driver.findElement(By.xpath(address));
 			break;
 		case id:
 			e = (MobileElement) driver.findElement(By.id(address));
@@ -82,19 +127,56 @@ public class Element {
 		case linkText:
 			e = (MobileElement) driver.findElement(By.linkText(address));
 			break;
+		case desc:
+			e = (MobileElement) driver.findElementByAccessibilityId(address);
+			break;
 		default:
 			e = (MobileElement) driver.findElement(By.id(address));
 		}
 		return e;
 
 	}
-
+	
+	public boolean waitForElementToLoad(int timeOut,String ename) {
+		boolean flag = false;
+		By by = null;
+		String list = ElementConfig.get(ename);
+		if (list != null) {
+			String[] lists = list.split("\\|\\|");
+			if (lists.length == 2) {
+				type = getByType(lists[0]);
+				address = lists[1];
+				by = whichBy();
+				flag = waitForLoad(timeOut, by);
+			} else {
+				LOG.error("[key=" + ename + "]的配置不正确，请检查");
+			}
+		} else {
+			LOG.error("没有获取到[key=" + ename + "]的元素");
+		}
+		return flag;
+	}
+	
+	private boolean waitForLoad(int timeOut,final By by) {
+		boolean flag = false;
+		try {
+			flag = (new WebDriverWait(driver, timeOut)).until(new ExpectedCondition<Boolean>() {
+				public Boolean apply(WebDriver driver) {
+					MobileElement element = driver.findElement(by);
+					return element.isDisplayed();
+				}
+			});
+		} catch (TimeoutException e) {
+			LOG.error("超时!! " + timeOut + " 秒之后还没找到元素 [" + by + "]", e);
+		}
+		return flag;
+	}
 
 	/**
 	 * 向左滑动
 	 */
 	public void swipeToLeft() {
-		
+
 		int x = driver.manage().window().getSize().width;
 		int y = driver.manage().window().getSize().height;
 		try {
@@ -178,6 +260,21 @@ public class Element {
 	}
 
 	/**
+	 * 操作拖动条
+	 */
+	public void dragSeekBar(String el) {
+		MobileElement slider = get(el);
+		// 获取拖动条的开始拖动点的x坐标
+		int xAxisStartPoint = slider.getLocation().getX();
+		// 获取拖动条的结束点的x坐标 = 开始x坐标+滑动条元素的宽度
+		int xAxisEndPoint = xAxisStartPoint + slider.getSize().getWidth();
+		// 滚动条的y坐标
+		int yAxis = slider.getLocation().getY();
+		TouchAction act = new TouchAction(driver);
+		act.press(xAxisStartPoint, yAxis).waitAction(800).moveTo(xAxisEndPoint - 1, yAxis).release().perform();
+	}
+
+	/**
 	 * 切换Webview页面查找元素
 	 */
 	public void switchtoWebview() {
@@ -197,7 +294,6 @@ public class Element {
 		}
 	}
 
-	
 	public static ByType getByType(String type) {
 		ByType byType = ByType.xpath;
 		if (type == null || type.equalsIgnoreCase("xpath")) {

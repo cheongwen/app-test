@@ -31,5 +31,5 @@ public class ElementConfig {
 	public static String get(String name) {
 		return evn.getProperty(name);
 	}
-
+	
 }
