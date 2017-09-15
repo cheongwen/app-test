@@ -60,17 +60,18 @@ public class Element {
 				type = getByType(lists[0]);
 				address = lists[1];
 				me = find(whichBy());
-				//me = find();
+				// me = find();
 			} else {
 				LOG.error("[key=" + ename + "]的配置不正确，请检查");
 			}
 		} else {
-			LOG.error("没有获取到[key=" + ename + "]的元素");
+			LOG.info("根据元素配置表未获取到[key=" + ename + "]的元素,根据名称查找元素");
+			me = find(By.name(ename));
 		}
 
 		return me;
 	}
-	
+
 	/**
 	 * 根据配置获取元素查找方式及元素定位属性
 	 * 
@@ -86,7 +87,7 @@ public class Element {
 				type = getByType(lists[0]);
 				address = lists[1];
 				elist = findList(whichBy());
-				//me = find();
+				// me = find();
 			} else {
 				LOG.error("[key=" + ename + "]的配置不正确，请检查");
 			}
@@ -97,6 +98,11 @@ public class Element {
 		return elist;
 	}
 
+	/**
+	 * 查找元素列表，并返回
+	 * 
+	 * @return List<MobileElement>
+	 */
 	private List<MobileElement> findList(By whichBy) {
 		List<MobileElement> list = (List<MobileElement>) driver.findElements(whichBy);
 		return list;
@@ -105,15 +111,15 @@ public class Element {
 	/**
 	 * 查找元素，并返回
 	 * 
-	 * @return
+	 * @return MoblieElement
 	 */
 	private MobileElement find(By by) {
 		MobileElement e = (MobileElement) driver.findElement(by);
 		return e;
 	}
-	
+
 	private By whichBy() {
-		By by ;
+		By by;
 		switch (type) {
 		case xpath:
 			by = By.xpath(address);
@@ -135,12 +141,13 @@ public class Element {
 		}
 		return by;
 	}
-	
+
 	/**
 	 * 查找元素，并返回
 	 * 
 	 * @return
 	 */
+	@Deprecated
 	private MobileElement find() {
 		MobileElement e = null;
 		switch (type) {
@@ -168,14 +175,16 @@ public class Element {
 		return e;
 
 	}
-	
+
 	/**
 	 * 在配置时间内判断元素是否存在
-	 * @param timeOut 秒
+	 * 
+	 * @param timeOut
+	 *            秒
 	 * @param ename
 	 * @return
 	 */
-	public boolean isExist(int timeOut,String ename) {
+	public boolean isExist(int timeOut, String ename) {
 		boolean flag = false;
 		By by = null;
 		String list = ElementConfig.get(ename);
@@ -185,7 +194,7 @@ public class Element {
 				type = getByType(lists[0]);
 				address = lists[1];
 				by = whichBy();
-				flag = waitForLoad(timeOut, by);
+				flag = waitForLoad(timeOut, by, ename);
 			} else {
 				LOG.error("[key=" + ename + "]的配置不正确，请检查");
 			}
@@ -194,8 +203,8 @@ public class Element {
 		}
 		return flag;
 	}
-	
-	private boolean waitForLoad(int timeOut,final By by) {
+
+	private boolean waitForLoad(int timeOut, final By by, String name) {
 		boolean flag = false;
 		try {
 			flag = (new WebDriverWait(driver, timeOut)).until(new ExpectedCondition<Boolean>() {
@@ -205,16 +214,32 @@ public class Element {
 				}
 			});
 		} catch (TimeoutException e) {
-			LOG.error("超时!! " + timeOut + " 秒之后还没找到元素 [" + by + "]", e);
+			LOG.error("!!超时!! " + timeOut + " 秒之后还没找到元素 [" + name + "]");
 		}
 		return flag;
 	}
-	
+
 	/**
-	 * 弹出窗口处理
+	 * 判断当前页面中是否存在查找的字符
+	 * 
+	 * @param 需要查找的字符
+	 * @return true/false
+	 */
+	public boolean isContainTxt(String txt) {
+		List<MobileElement> list = (List<MobileElement>) driver.findElementsByClassName("android.widget.TextView");
+		for (MobileElement me : list) {
+			if (me.getText().contains(txt)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * 弹出窗口处理，直接根据名称定位获取元素，并点击
 	 */
 	public void alert(String name) {
-		get(name).click();
+		driver.findElement(By.name(name)).click();
 	}
 
 	/**
@@ -282,26 +307,27 @@ public class Element {
 	}
 
 	/**
+	 * 通过坐标长按N
+	 * @param x
+	 * @param y
+	 * @param time 毫秒
+	 * 
+	 */
+	public void longclickByXY(int x, int y, int time) {
+		try {
+			new TouchAction(driver).longPress(x, y).waitAction(time).perform();
+		} catch (Exception e) {
+			LOG.error("长按选择位置失败");
+
+		}
+	}
+
+	/**
 	 * 拖动元素
 	 * 
 	 */
 	public void dragElement(String e1, String e2) {
 		action.press(get(e1)).moveTo(get(e2)).release().perform();
-	}
-
-	/**
-	 * 判断元素是否出现
-	 * 
-	 */
-	public boolean isElementDisplayed(String el) {
-		boolean flag = false;
-		try {
-			get(el).isDisplayed();
-			flag = true;
-		} catch (Exception e) {
-			flag = false;
-		}
-		return flag;
 	}
 
 	/**
@@ -352,5 +378,5 @@ public class Element {
 		}
 		return byType;
 	}
-	
+
 }

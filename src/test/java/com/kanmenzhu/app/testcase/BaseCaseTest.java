@@ -25,6 +25,13 @@ import com.kanmenzhu.app.tools.TestngListener;
 
 import io.appium.java_client.AppiumDriver;
 
+/**
+ * BaseCaseTest作为测试用例类的父类，提供用例执行前后的处理工作
+ * 每一个测试类需要继承此类
+ * @author chang.lu
+ *
+ */
+
 @Listeners(TestngListener.class)
 @ContextConfiguration(classes = SpringConfig.class)
 public class BaseCaseTest extends AbstractTestNGSpringContextTests {
@@ -39,21 +46,11 @@ public class BaseCaseTest extends AbstractTestNGSpringContextTests {
 	ServerManager server;
 	AppiumDriver<?> driver;
 	BaseCase bcase;
-	AddressCase baddress;
-	NaviSetCase bnaviset;
-	GoNaviCase bgonavi;
 
 	@AfterMethod
 	public void afterMethod(){
 		//该方法用于每个用例执行完成后，返回到主界面
-		if (bcase.isExist(timeOut, "Naving-退出导航")) {
-			bcase.get("Naving-退出导航").click();
-			bcase.get("确定").click();
-			bcase.get("返回").click();
-		}
-		while (!bcase.isExist(timeOut, "TOS")) {
-			bcase.get("返回").click();
-		}
+		bcase.goToMain();
 	}
 	
 	@BeforeClass
@@ -61,9 +58,6 @@ public class BaseCaseTest extends AbstractTestNGSpringContextTests {
 		LOG.info("测试begin");
 		driver = Driver.getDriver();
 		bcase = new BaseCase(driver);
-		baddress = new AddressCase();
-		bnaviset = new NaviSetCase();
-		bgonavi = new GoNaviCase();
 		timeOut = Integer.valueOf(Config.get("timeOut","2"));
 		bcase.skipHelloPage();
 	}

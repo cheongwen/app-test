@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.io.UnsupportedEncodingException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,7 +44,9 @@ public class RunCommand implements Runnable {
 	private static void printMessage(final InputStream input) {
 		new Thread(new Runnable() {
 	       	public void run() {
-	       		Reader reader = new InputStreamReader(input);
+	       		Reader reader;
+				try {
+					reader = new InputStreamReader(input,"UTF-8");
 	       		BufferedReader bf = new BufferedReader(reader);
 	       		String line = null;
 	       		try {
@@ -64,6 +67,10 @@ public class RunCommand implements Runnable {
 	       		} catch (IOException e) {
 	       			LOG.error("[Appium]读取appium server日志失败",e);
 	       		}
+				} catch (UnsupportedEncodingException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 	       	}
 		}).start();
 	}

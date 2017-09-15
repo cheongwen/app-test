@@ -58,11 +58,13 @@ public class BaseCase extends Element {
 	}
 	
 	/**
-	 * 打开设置主页面
+	/**
+	 * 返回主界面操作
 	 */
-	public void OpenSettingPage(){
-		skipHelloPage();
-		get("Main-HUD设置").click();
+	public void goToMain() {
+		while (!isExist(1, "主页")) {
+			get("返回").click();
+		}
 	}
 		
 }
