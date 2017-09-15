@@ -1,5 +1,6 @@
 package com.crystal_optech.app.tools;
 
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
@@ -59,7 +60,8 @@ public class Element {
 			if (lists.length == 2) {
 				type = getByType(lists[0]);
 				address = lists[1];
-				me = find();
+				me = find(whichBy());
+				//me = find();
 			} else {
 				LOG.error("[key=" + ename + "]的配置不正确，请检查");
 			}
@@ -68,6 +70,37 @@ public class Element {
 		}
 
 		return me;
+	}
+	
+	/**
+	 * 根据配置获取元素查找方式及元素定位属性
+	 * 
+	 * @param ename
+	 * @return
+	 */
+	public List<MobileElement> getList(String ename) {
+		List<MobileElement> elist = null;
+		String list = ElementConfig.get(ename);
+		if (list != null) {
+			String[] lists = list.split("\\|\\|");
+			if (lists.length == 2) {
+				type = getByType(lists[0]);
+				address = lists[1];
+				elist = findList(whichBy());
+				//me = find();
+			} else {
+				LOG.error("[key=" + ename + "]的配置不正确，请检查");
+			}
+		} else {
+			LOG.error("没有获取到[key=" + ename + "]的元素");
+		}
+
+		return elist;
+	}
+
+	private List<MobileElement> findList(By whichBy) {
+		List<MobileElement> list = (List<MobileElement>) driver.findElements(whichBy);
+		return list;
 	}
 
 	/**
@@ -137,7 +170,13 @@ public class Element {
 
 	}
 	
-	public boolean waitForElementToLoad(int timeOut,String ename) {
+	/**
+	 * 在配置时间内判断元素是否存在
+	 * @param timeOut 秒
+	 * @param ename
+	 * @return
+	 */
+	public boolean isExist(int timeOut,String ename) {
 		boolean flag = false;
 		By by = null;
 		String list = ElementConfig.get(ename);
@@ -170,6 +209,13 @@ public class Element {
 			LOG.error("超时!! " + timeOut + " 秒之后还没找到元素 [" + by + "]", e);
 		}
 		return flag;
+	}
+	
+	/**
+	 * 弹出窗口处理
+	 */
+	public void alert(String name) {
+		get(name).click();
 	}
 
 	/**
@@ -307,4 +353,5 @@ public class Element {
 		}
 		return byType;
 	}
+	
 }

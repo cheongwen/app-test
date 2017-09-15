@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.crystal_optech.app.tools.BaseTools;
+import com.crystal_optech.app.tools.Config;
 import com.crystal_optech.app.tools.DriverTools;
 import com.crystal_optech.app.tools.Element;
 
@@ -23,6 +24,11 @@ public class BaseCase extends Element {
 	AppiumDriver<?> driver ;
 
 	private static final Logger LOG = LoggerFactory.getLogger(BaseCase.class);
+	
+	/**
+	 * 超时时间，单位：秒
+	 */
+	public int timeOut = Integer.valueOf(Config.get("timeOut","2"));
 	
 	public BaseCase() {
 		this.driver = DriverTools.getDriver();

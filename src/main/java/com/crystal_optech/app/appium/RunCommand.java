@@ -32,8 +32,7 @@ public class RunCommand implements Runnable {
 			printMessage(process.getInputStream());
 			printMessage(process.getErrorStream());
 		} catch (IOException e) {
-			LOG.error("执行命令失败");
-			e.printStackTrace();
+			LOG.error("执行命令失败",e);
 		} 
 	}
 
@@ -55,10 +54,15 @@ public class RunCommand implements Runnable {
 	       				}
 	       				if (line.contains("Could not start REST")) {
 							ServerManager.error = true;
+							break;
+						}
+	       				if (line.contains("0 device(s) connected")) {
+							ServerManager.error = true;
+							break;
 						}
 	       			}
 	       		} catch (IOException e) {
-	       			LOG.error("[Appium]读取appium server日志失败");
+	       			LOG.error("[Appium]读取appium server日志失败",e);
 	       		}
 	       	}
 		}).start();
