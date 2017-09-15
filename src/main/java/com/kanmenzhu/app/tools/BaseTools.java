@@ -1,4 +1,4 @@
-package com.crystal_optech.app.tools;
+package com.kanmenzhu.app.tools;
 
 import java.io.File;
 import java.io.IOException;
@@ -44,7 +44,7 @@ public class BaseTools {
 	 * @param picName
 	 */
 	public static void captureScreenShot(String picName) {
-		File srcFile = DriverTools.getDriver().getScreenshotAs(OutputType.FILE);
+		File srcFile = Driver.getDriver().getScreenshotAs(OutputType.FILE);
         File location = new File("screenshots");
         File targetFile = new File(location.getAbsolutePath()+File.separator+picName+BaseTools.dateName()+".png");
         LOG.info("[截图]保存地址：" + targetFile.getPath());

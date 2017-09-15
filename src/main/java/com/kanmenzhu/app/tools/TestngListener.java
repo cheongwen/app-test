@@ -1,4 +1,4 @@
-package com.crystal_optech.app.tools;
+package com.kanmenzhu.app.tools;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -6,9 +6,6 @@ import org.testng.ITestContext;
 import org.testng.ITestListener;
 import org.testng.ITestResult;
 
-import com.crystal_optech.app.appium.ServerManager;
-import com.crystal_optech.app.appium.WindowsManager;
-import com.crystal_optech.app.testcase.BaseCase;
 
 /**
  * TestNG 监听类扩展

@@ -1,4 +1,4 @@
-package com.crystal_optech.app.appium;
+package com.kanmenzhu.app.appium;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

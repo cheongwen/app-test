@@ -1,23 +1,12 @@
-package com.crystal_optech.app.tools;
+package com.kanmenzhu.app.tools;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-
-import org.apache.commons.collections.ResettableIterator;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.DependsOn;
-import org.springframework.stereotype.Component;
-
-import com.crystal_optech.app.appium.ServerManager;
-import com.crystal_optech.app.appium.WindowsManager;
-import com.crystal_optech.app.testcase.BaseCase;
-import com.crystal_optech.app.tools.Config;
 
 import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.android.AndroidDriver;
@@ -31,15 +20,12 @@ import io.appium.java_client.remote.MobileCapabilityType;
  *
  */
 
-public class DriverTools {
+public class Driver {
 
-	private static final Logger LOG = LoggerFactory.getLogger(DriverTools.class);
+	private static final Logger LOG = LoggerFactory.getLogger(Driver.class);
 
 	static IOSDriver<?> iosDriver;
 	static AndroidDriver<?> androidDriver;
-	
-	public DriverTools() {
-	}
 	
 	public static void reset() {
 		androidDriver = null;

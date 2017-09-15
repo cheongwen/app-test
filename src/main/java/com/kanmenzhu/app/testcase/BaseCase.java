@@ -1,16 +1,14 @@
-package com.crystal_optech.app.testcase;
+package com.kanmenzhu.app.testcase;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.crystal_optech.app.tools.BaseTools;
-import com.crystal_optech.app.tools.Config;
-import com.crystal_optech.app.tools.DriverTools;
-import com.crystal_optech.app.tools.Element;
+import com.kanmenzhu.app.tools.BaseTools;
+import com.kanmenzhu.app.tools.Config;
+import com.kanmenzhu.app.tools.Driver;
+import com.kanmenzhu.app.tools.Element;
 
 import io.appium.java_client.AppiumDriver;
-import io.appium.java_client.MobileElement;
-import io.appium.java_client.TouchAction;
 
 /**
  * 测试基础类，提供封装方法
@@ -31,7 +29,7 @@ public class BaseCase extends Element {
 	public int timeOut = Integer.valueOf(Config.get("timeOut","2"));
 	
 	public BaseCase() {
-		this.driver = DriverTools.getDriver();
+		this.driver = Driver.getDriver();
 	}
 	
 	public BaseCase(AppiumDriver<?> d) {
@@ -42,18 +40,20 @@ public class BaseCase extends Element {
 	 * 跳过欢迎页面
 	 */
 	public void skipHelloPage() {
-		BaseTools.wait(3000);
-		get("跳过").click();
+		if (isExist(timeOut, "跳过")) {
+			get("跳过").click();
+		}
 	}
 	
 	/**
 	 * 滑动欢迎页面
 	 */
 	public void swipeHelloPage() {
-		BaseTools.wait(3000);
-		for (int i = 0; i < 4; i++) {
-			BaseTools.wait(1000);
-			swipeToLeft();
+		if (isExist(timeOut, "跳过")) {
+			for (int i = 0; i < 4; i++) {
+				BaseTools.wait(1000);
+				swipeToLeft();
+			}
 		}
 	}
 	

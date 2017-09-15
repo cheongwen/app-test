@@ -1,4 +1,4 @@
-package com.crystal_optech.app.tools;
+package com.kanmenzhu.app.tools;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;

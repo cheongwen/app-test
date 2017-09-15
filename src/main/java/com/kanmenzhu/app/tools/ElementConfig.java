@@ -1,4 +1,4 @@
-package com.crystal_optech.app.tools;
+package com.kanmenzhu.app.tools;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;

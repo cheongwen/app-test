@@ -1,4 +1,4 @@
-package com.crystal_optech.app.tools;
+package com.kanmenzhu.app.tools;
 
 import java.util.List;
 import java.util.Set;
@@ -41,9 +41,8 @@ public class Element {
 	};
 
 	public Element() {
-		driver = DriverTools.getDriver();
+		driver = Driver.getDriver();
 		action = new TouchAction(driver);
-//		driver.manage().timeouts().pageLoadTimeout(Integer.getInteger(Config.get("timeout", "1000")), TimeUnit.SECONDS);
 	}
 
 	/**

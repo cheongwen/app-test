@@ -1,4 +1,4 @@
-package com.crystal_optech.app.appium;
+package com.kanmenzhu.app.appium;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
@@ -7,11 +7,11 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.testng.annotations.Test;
 
-import com.crystal_optech.app.tools.BaseTools;
-import com.crystal_optech.app.tools.Config;
-import com.crystal_optech.app.tools.DriverTools;
-import com.crystal_optech.app.tools.SpringConfig;
+import com.kanmenzhu.app.tools.BaseTools;
+import com.kanmenzhu.app.tools.Driver;
+import com.kanmenzhu.app.tools.SpringConfig;
 
+import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.android.AndroidDriver;
 
 @ContextConfiguration(classes = SpringConfig.class)
@@ -21,8 +21,7 @@ public class ServerManagerTest extends AbstractTestNGSpringContextTests {
 	public void start() {
 		ServerManager winServer = new WindowsManager();
 		winServer.start();
-		DriverTools divers = new DriverTools();
-		AndroidDriver<WebElement> driver = (AndroidDriver<WebElement>) divers.getDriver();
+		AppiumDriver<?> driver = Driver.getDriver();
 		try {
 			BaseTools.wait(500);
 			throw new Exception();

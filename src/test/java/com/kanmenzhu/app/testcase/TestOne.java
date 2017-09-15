@@ -1,12 +1,11 @@
-package com.crystal_optech.app.testcase;
+package com.kanmenzhu.app.testcase;
 
 import org.testng.annotations.Test;
 
-import com.crystal_optech.app.appium.ServerManager;
-import com.crystal_optech.app.appium.WindowsManager;
-import com.crystal_optech.app.tools.BaseTools;
-import com.crystal_optech.app.tools.DriverTools;
-import com.crystal_optech.app.tools.SpringConfig;
+import com.kanmenzhu.app.appium.ServerManager;
+import com.kanmenzhu.app.appium.WindowsManager;
+import com.kanmenzhu.app.tools.Driver;
+import com.kanmenzhu.app.tools.SpringConfig;
 
 import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.android.AndroidElement;
@@ -36,7 +35,7 @@ public class TestOne extends AbstractTestNGSpringContextTests {
 	
 	@BeforeClass
 	public void beforeClass() {
-		driver = (AndroidDriver<WebElement>) DriverTools.getDriver();
+		driver = (AndroidDriver<WebElement>) Driver.getDriver();
 	}
 	
 	@AfterClass

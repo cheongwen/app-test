@@ -1,4 +1,4 @@
-package com.crystal_optech.app.appium;
+package com.kanmenzhu.app.appium;
 
 /**
  * Windows平台Appium管理类
