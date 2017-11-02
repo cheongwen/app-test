@@ -1,7 +1,8 @@
 # CanUI
->此框架支持APP UI自动化，采用appium+maven+testng+spring搭建
+>此框架支持APP UI自动化
+>采用appium+maven+testng+spring搭建
  
-## 一.结构说明：
+## 结构说明
 ### 1.appium服务管理 /appium
 *	1.1 ServerManager.java用于控制appium，启动/关闭appium命令在config.properties中配置
 *	1.2 RunCommand.java分线程执行控制命令，可获取appium启动日志，启动成功后，开始创建driver
