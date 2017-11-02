@@ -50,10 +50,7 @@ public class BaseCase extends Element {
 	 */
 	public void swipeHelloPage() {
 		if (isExist(timeOut, "跳过")) {
-			for (int i = 0; i < 4; i++) {
-				BaseTools.wait(1000);
-				swipeToLeft();
-			}
+			swipeToLeft(4);
 		}
 	}
 	

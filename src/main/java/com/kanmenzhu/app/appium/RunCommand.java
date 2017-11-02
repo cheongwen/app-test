@@ -32,7 +32,8 @@ public class RunCommand implements Runnable {
 			process = Runtime.getRuntime().exec(cmd);
 			printMessage(process.getInputStream());
 			printMessage(process.getErrorStream());
-		} catch (IOException e) {
+		} catch (Exception e) {
+			ServerManager.error = true;
 			LOG.error("执行命令失败",e);
 		} 
 	}
@@ -47,30 +48,33 @@ public class RunCommand implements Runnable {
 	       		Reader reader;
 				try {
 					reader = new InputStreamReader(input,"UTF-8");
-	       		BufferedReader bf = new BufferedReader(reader);
-	       		String line = null;
-	       		try {
-	       			while((line=bf.readLine())!=null) {
-	       				LOG.info("[Appium]"+line);
-	       				if (line.contains("started")) {
-	       					ServerManager.run = true;
-	       				}
-	       				if (line.contains("Could not start REST")) {
-							ServerManager.error = true;
-							break;
-						}
-	       				if (line.contains("0 device(s) connected")) {
-							ServerManager.error = true;
-							break;
-						}
-	       			}
-	       		} catch (IOException e) {
-	       			LOG.error("[Appium]读取appium server日志失败",e);
-	       		}
+					BufferedReader bf = new BufferedReader(reader);
+		       		String line = null;
+		       		try {
+		       			while((line=bf.readLine())!=null) {
+		       				LOG.debug("[Appium]"+line);
+		       				if (line.contains("started")) {
+		       					ServerManager.run = true;
+		       				}
+		       				if (line.contains("Could not start REST")) {
+								ServerManager.error = true;
+								LOG.error("[Appium]Appium存在未关闭的进程");
+								break;
+							}
+		       				if (line.contains("0 device(s) connected")) {
+								ServerManager.error = true;
+								LOG.error("[Appium]0 device(s) connected");
+								break;
+							}
+		       			}
+		       		} catch (IOException e) {
+		       			LOG.error("[Appium]读取appium server日志失败",e);
+		       		}
 				} catch (UnsupportedEncodingException e1) {
-					// TODO Auto-generated catch block
+					ServerManager.error = true;
 					e1.printStackTrace();
 				}
+	       		
 	       	}
 		}).start();
 	}

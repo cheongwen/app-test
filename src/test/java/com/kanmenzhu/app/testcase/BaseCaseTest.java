@@ -2,26 +2,18 @@ package com.kanmenzhu.app.testcase;
 
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.BeforeClass;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
-import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
-import org.testng.annotations.AfterSuite;
-import org.testng.annotations.AfterTest;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.BeforeSuite;
 import org.testng.annotations.Listeners;
 
-import com.kanmenzhu.app.appium.ServerManager;
-import com.kanmenzhu.app.appium.WindowsManager;
+import com.kanmenzhu.app.tools.SuiteListener;
 import com.kanmenzhu.app.tools.Config;
 import com.kanmenzhu.app.tools.Driver;
 import com.kanmenzhu.app.tools.SpringConfig;
-import com.kanmenzhu.app.tools.TestngListener;
+import com.kanmenzhu.app.tools.TestListener;
 
 import io.appium.java_client.AppiumDriver;
 
@@ -32,7 +24,7 @@ import io.appium.java_client.AppiumDriver;
  *
  */
 
-@Listeners(TestngListener.class)
+@Listeners({ TestListener.class, SuiteListener.class })
 @ContextConfiguration(classes = SpringConfig.class)
 public class BaseCaseTest extends AbstractTestNGSpringContextTests {
 
@@ -41,9 +33,8 @@ public class BaseCaseTest extends AbstractTestNGSpringContextTests {
 	/**
 	 * 超时时间，单位：秒
 	 */
-	public int timeOut ;
-	
-	ServerManager server;
+	public int timeOut;
+
 	AppiumDriver<?> driver;
 	BaseCase bcase;
 
@@ -56,9 +47,13 @@ public class BaseCaseTest extends AbstractTestNGSpringContextTests {
 	@BeforeClass
 	public void beforeClass() {
 		LOG.info("测试begin");
+		Driver.autoDriver = "Appium";
+		//获取toast，使用uiautomator2
+		//Driver.autoDriver = "uiautomator2";
 		driver = Driver.getDriver();
 		bcase = new BaseCase(driver);
 		timeOut = Integer.valueOf(Config.get("timeOut","2"));
+		//跳过欢迎界面
 		bcase.skipHelloPage();
 	}
 
@@ -70,25 +65,7 @@ public class BaseCaseTest extends AbstractTestNGSpringContextTests {
 		LOG.info("测试end");
 	}
 	
-	/**
-	 * 测试开始前，开启Appium服务
-	 */
-	@BeforeSuite
-	public void beforeSuite() {
-		LOG.info("测试Suite开始，开启appium server");
-		server = new WindowsManager();
-		server.start();
-	}
 	
-	
-	/**
-	 * 测试结束后，关闭Appium服务
-	 */
-	@AfterSuite
-	public void afterSuite() {
-		driver.quit();
-		LOG.info("测试Suite结束，关闭appium server");
-		server.stop();
-	}
+
 
 }

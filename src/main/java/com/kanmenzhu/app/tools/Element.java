@@ -2,7 +2,6 @@ package com.kanmenzhu.app.tools;
 
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.TimeUnit;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.TimeoutException;
@@ -12,9 +11,6 @@ import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.thoughtworks.selenium.webdriven.commands.WaitForPageToLoad;
-
 import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.MobileElement;
 import io.appium.java_client.TouchAction;
@@ -32,13 +28,17 @@ public class Element {
 	private TouchAction action;
 
 	AppiumDriver<?> driver;
-
+	
+	/** 定位路径	 */
 	String address;
-	ByType type;
 
+	/** 定位方式	：xpath, linkText, id, name, className, desc */
+	ByType type;
+	
 	public enum ByType {
 		xpath, linkText, id, name, className, desc
 	};
+	
 
 	public Element() {
 		driver = Driver.getDriver();
@@ -60,18 +60,26 @@ public class Element {
 				type = getByType(lists[0]);
 				address = lists[1];
 				me = find(whichBy());
-				// me = find();
 			} else {
 				LOG.error("[key=" + ename + "]的配置不正确，请检查");
 			}
 		} else {
-			LOG.info("根据元素配置表未获取到[key=" + ename + "]的元素,根据名称查找元素");
-			me = find(By.name(ename));
+			LOG.error("根据元素配置表未获取到[key=" + ename + "]的元素,根据名称查找元素");
+			me = findByName(ename);
 		}
-
 		return me;
 	}
-
+	
+	/**
+	 * 通过xpath方式获取包含name的控件
+	 * @param name
+	 * @return 
+	 */
+	private MobileElement findByName(String name) {
+		MobileElement e = find(By.xpath("//android.widget.TextView[contains(@text,'"+name+"')]"));
+		return e;
+	}
+	
 	/**
 	 * 根据配置获取元素查找方式及元素定位属性
 	 * 
@@ -87,12 +95,11 @@ public class Element {
 				type = getByType(lists[0]);
 				address = lists[1];
 				elist = findList(whichBy());
-				// me = find();
 			} else {
 				LOG.error("[key=" + ename + "]的配置不正确，请检查");
 			}
 		} else {
-			LOG.error("没有获取到[key=" + ename + "]的元素");
+			LOG.error("根据元素配置表未获取到[key=" + ename + "]的元素,根据名称查找元素");
 		}
 
 		return elist;
@@ -142,46 +149,12 @@ public class Element {
 		return by;
 	}
 
-	/**
-	 * 查找元素，并返回
-	 * 
-	 * @return
-	 */
-	@Deprecated
-	private MobileElement find() {
-		MobileElement e = null;
-		switch (type) {
-		case xpath:
-			e = (MobileElement) driver.findElement(By.xpath(address));
-			break;
-		case id:
-			e = (MobileElement) driver.findElement(By.id(address));
-			break;
-		case name:
-			e = (MobileElement) driver.findElement(By.name(address));
-			break;
-		case className:
-			e = (MobileElement) driver.findElement(By.className(address));
-			break;
-		case linkText:
-			e = (MobileElement) driver.findElement(By.linkText(address));
-			break;
-		case desc:
-			e = (MobileElement) driver.findElementByAccessibilityId(address);
-			break;
-		default:
-			e = (MobileElement) driver.findElement(By.id(address));
-		}
-		return e;
-
-	}
 
 	/**
 	 * 在配置时间内判断元素是否存在
 	 * 
-	 * @param timeOut
-	 *            秒
-	 * @param ename
+	 * @param timeOut  单位：秒
+	 * @param ename  element.properties文件中配置名称
 	 * @return
 	 */
 	public boolean isExist(int timeOut, String ename) {
@@ -199,7 +172,11 @@ public class Element {
 				LOG.error("[key=" + ename + "]的配置不正确，请检查");
 			}
 		} else {
-			LOG.error("没有获取到[key=" + ename + "]的元素");
+			LOG.error("根据元素配置表未获取到[key=" + ename + "]的元素,根据名称查找元素");
+			flag = waitForLoad(timeOut, By.xpath("//*[contains(@text,'"+ename+"')]"), ename);
+		}
+		if (flag) {
+			LOG.info("Successful:界面存在元素["+ename+"]");
 		}
 		return flag;
 	}
@@ -210,7 +187,7 @@ public class Element {
 			flag = (new WebDriverWait(driver, timeOut)).until(new ExpectedCondition<Boolean>() {
 				public Boolean apply(WebDriver driver) {
 					MobileElement element = driver.findElement(by);
-					return element.isDisplayed();
+					return true;
 				}
 			});
 		} catch (TimeoutException e) {
@@ -225,73 +202,106 @@ public class Element {
 	 * @param 需要查找的字符
 	 * @return true/false
 	 */
+	
 	public boolean isContainTxt(String txt) {
-		List<MobileElement> list = (List<MobileElement>) driver.findElementsByClassName("android.widget.TextView");
-		for (MobileElement me : list) {
-			if (me.getText().contains(txt)) {
-				return true;
+		LOG.info("判断界面是否存在字符："+txt);
+		MobileElement text = null;
+		MobileElement button = null;
+		try {
+			text = (MobileElement) driver.findElement(By.xpath("//android.widget.TextView[contains(@text,'"+txt+"')]"));
+		} catch (Exception e) {
+			LOG.info("没有找到存在"+txt+"的TextView");
+			try {
+				button = (MobileElement) driver.findElement(By.xpath("//android.widget.Button[contains(@text,'"+txt+"')]"));
+			} catch (Exception e1) {
+				LOG.info("没有找到存在"+txt+"的button");
 			}
+		}
+		
+		if (text!=null||button!=null) {
+			LOG.info("Successful:界面存在字符["+txt+"]");
+			return true;
 		}
 		return false;
 	}
-
+	
 	/**
 	 * 弹出窗口处理，直接根据名称定位获取元素，并点击
 	 */
-	public void alert(String name) {
-		driver.findElement(By.name(name)).click();
-	}
-
-	/**
-	 * 向左滑动
-	 */
-	public void swipeToLeft() {
-
-		int x = driver.manage().window().getSize().width;
-		int y = driver.manage().window().getSize().height;
+	public void alert(String txt) {
 		try {
-			driver.swipe((x / 8 * 7), (y / 2 * 1), (x / 8 * 1), (y / 2 * 1), 1000);
-		} catch (Exception e) {
-			driver.swipe((x / 8 * 7), (y / 2 * 1), (x / 8 * 1), (y / 2 * 1), 1000);
+			driver.findElement(By.name(txt)).click();
+		} catch (Exception e2) {
+			try {
+				driver.findElement(By.xpath("//android.widget.Button[contains(@text,'"+txt+"')]")).click();
+			} catch (Exception e) {
+				LOG.info("没有找到存在"+txt+"的button");
+				try {
+					driver.findElement(By.xpath("//android.widget.TextView[contains(@text,'"+txt+"')]")).click();
+				} catch (Exception e1) {
+					LOG.info("没有找到存在"+txt+"的TextView");
+				}
+			}
 		}
 	}
 
 	/**
-	 * 向右滑动
+	 * 向左滑动n次
 	 */
-	public void swipeToRight() {
-		int x = driver.manage().window().getSize().width;
-		int y = driver.manage().window().getSize().height;
-		try {
-			driver.swipe((x / 8 * 1), (y / 2 * 1), (x / 8 * 7), (y / 2 * 1), 1000);
-		} catch (Exception e) {
-			driver.swipe((x / 8 * 1), (y / 2 * 1), (x / 8 * 7), (y / 2 * 1), 1000);
+	public void swipeToLeft(int n) {
+		int x = Driver.width;
+		int y = Driver.height;
+		for (int i = 0; i < n; i++) {
+			try {
+				driver.swipe((x / 8 * 7), (y / 2 * 1), (x / 8 * 1), (y / 2 * 1), 1000);
+			} catch (Exception e) {
+				LOG.error("第"+(i+1)+"次滑动失败",e);
+			}
 		}
 	}
 
 	/**
-	 * 向上滑动
+	 * 向右滑动n次
 	 */
-	public void swipeToUp() {
-		int x = driver.manage().window().getSize().width;
-		int y = driver.manage().window().getSize().height;
-		try {
-			driver.swipe((x / 2 * 1), (y / 4 * 3), (x / 2 * 1), (y / 4 * 1), 1500);
-		} catch (Exception e) {
-			driver.swipe((x / 2 * 1), (y / 4 * 3), (x / 2 * 1), (y / 4 * 1), 1500);
+	public void swipeToRight(int n) {
+		int x = Driver.width;
+		int y = Driver.height;
+		for (int i = 0; i < n; i++) {
+			try {
+				driver.swipe((x / 8 * 1), (y / 2 * 1), (x / 8 * 7), (y / 2 * 1), 1000);
+			} catch (Exception e) {
+				LOG.error("第"+(i+1)+"次滑动失败",e);
+			}
 		}
 	}
 
 	/**
-	 * 向下滑动
+	 * 向上滑动n次
 	 */
-	public void swipeToDown() {
-		int x = driver.manage().window().getSize().width;
-		int y = driver.manage().window().getSize().height;
-		try {
-			driver.swipe((x / 2 * 1), (y / 8 * 1), (x / 2 * 1), (y / 8 * 7), 1000);
-		} catch (Exception e) {
-			driver.swipe((x / 2 * 1), (y / 8 * 1), (x / 2 * 1), (y / 8 * 7), 1000);
+	public void swipeToUp(int n) {
+		int x = Driver.width;
+		int y = Driver.height;
+		for (int i = 0; i < n; i++) {
+			try {
+				driver.swipe((x / 2 * 1), (y / 4 * 3), (x / 2 * 1), (y / 4 * 1), 1000);
+			} catch (Exception e) {
+				LOG.error("第"+(i+1)+"次滑动失败",e);
+			}
+		}
+	}
+
+	/**
+	 * 向下滑动n次
+	 */
+	public void swipeToDown(int n) {
+		int x = Driver.width;
+		int y = Driver.height;
+		for (int i = 0; i < n; i++) {
+			try {
+				driver.swipe((x / 2 * 1), (y / 8 * 1), (x / 2 * 1), (y / 8 * 7), 1000);
+			} catch (Exception e) {
+				LOG.error("第"+(i+1)+"次滑动失败",e);
+			}
 		}
 	}
 
@@ -302,7 +312,7 @@ public class Element {
 		try {
 			action.tap(x, y).release().perform();
 		} catch (Exception e) {
-			LOG.error("坐标点击失败");
+			LOG.error("坐标【"+x+","+y+"】点击失败");
 		}
 	}
 
@@ -315,10 +325,9 @@ public class Element {
 	 */
 	public void longclickByXY(int x, int y, int time) {
 		try {
-			new TouchAction(driver).longPress(x, y).waitAction(time).perform();
+			action.longPress(x, y).waitAction(time).perform();
 		} catch (Exception e) {
-			LOG.error("长按选择位置失败");
-
+			LOG.error("长按选择位置【"+x+","+y+"】失败");
 		}
 	}
 
@@ -330,21 +339,30 @@ public class Element {
 		action.press(get(e1)).moveTo(get(e2)).release().perform();
 	}
 
+	
 	/**
-	 * 操作拖动条
+	 * 以（x,y）为基准，计算得出（x,y-100）,(x,y+100)两个点，然后2个手指按住这两个点同时滑到（x,y）
 	 */
-	public void dragSeekBar(String el) {
-		MobileElement slider = get(el);
-		// 获取拖动条的开始拖动点的x坐标
-		int xAxisStartPoint = slider.getLocation().getX();
-		// 获取拖动条的结束点的x坐标 = 开始x坐标+滑动条元素的宽度
-		int xAxisEndPoint = xAxisStartPoint + slider.getSize().getWidth();
-		// 滚动条的y坐标
-		int yAxis = slider.getLocation().getY();
-		TouchAction act = new TouchAction(driver);
-		act.press(xAxisStartPoint, yAxis).waitAction(800).moveTo(xAxisEndPoint - 1, yAxis).release().perform();
+	public void zoom() {
+		int x = Driver.width;
+		int y = Driver.height;
+		int centerx = x/2;
+		int centery = y/2;
+		driver.zoom(centerx, centery);
 	}
 
+	/**
+	 * 两个手指从（x,y）点开始向（x,y-100）和（x,y+100）滑动
+	 */
+	public void pinch() {
+		int x = Driver.width;
+		int y = Driver.height;
+		int centerx = x/2;
+		int centery = y/2;
+		driver.pinch(centerx, centery);
+	}
+
+	
 	/**
 	 * 切换Webview页面查找元素
 	 */

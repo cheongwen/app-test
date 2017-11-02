@@ -18,11 +18,13 @@ public class Config {
 	
 	public final static String ANDROID = "Android";
 	public final static String IOS = "IOS";
+	public static String Platform;
 	
 	static Environment evn ;
 	
 	public Config(Environment evn1) {
 		evn = evn1;
+		this.Platform = evn.getProperty("auto.platform",ANDROID);
 	}
 	
 	/**

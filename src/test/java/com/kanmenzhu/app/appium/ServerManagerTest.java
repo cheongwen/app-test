@@ -15,7 +15,7 @@ public class ServerManagerTest extends AbstractTestNGSpringContextTests {
 
 	@Test
 	public void start() {
-		ServerManager winServer = new WindowsManager();
+		ServerManager winServer = new ServerManager();
 		winServer.start();
 		AppiumDriver<?> driver = Driver.getDriver();
 		try {
@@ -23,7 +23,6 @@ public class ServerManagerTest extends AbstractTestNGSpringContextTests {
 			throw new Exception();
 		} catch (Exception e) {
 			driver.quit();
-			driver.close();
 			winServer.stop();
 			e.printStackTrace();
 		}

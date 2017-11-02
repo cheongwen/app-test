@@ -9,12 +9,13 @@ import org.testng.ITestResult;
 
 /**
  * TestNG 监听类扩展
- * @author Administrator
+ * 测试执行失败截图
+ * @author chang.lu
  *
  */
-public class TestngListener implements ITestListener {
+public class TestListener implements ITestListener {
 
-	private static final Logger LOG = LoggerFactory.getLogger(TestngListener.class);
+	private static final Logger LOG = LoggerFactory.getLogger(TestListener.class);
 	
 	
 	public void onFinish(ITestContext arg0) {

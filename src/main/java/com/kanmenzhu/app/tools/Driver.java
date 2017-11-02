@@ -26,6 +26,9 @@ public class Driver {
 
 	static IOSDriver<?> iosDriver;
 	static AndroidDriver<?> androidDriver;
+	public static int width ;
+	public static int height ;
+	public static String autoDriver = "Appium";
 	
 	public static void reset() {
 		androidDriver = null;
@@ -33,13 +36,13 @@ public class Driver {
 	}
 
 	public static AppiumDriver<?> getDriver() {
-		if ("Android".equals(Config.get("auto.platform","Android"))) {
+		if (Config.ANDROID.equals(Config.get("auto.platform","Android"))) {
 			if (androidDriver==null) {
 				LOG.info("创建Android Driver");
-				createAndroidDriver(Config.get("auto.udid"),Config.get("auto.port"),Config.get("auto.appPackage"),Config.get("auto.appActivity"));
+				createAndroidDriver(autoDriver,Config.get("auto.udid"),Config.get("auto.port"),Config.get("auto.appPackage"),Config.get("auto.appActivity"));
 			}
 			return androidDriver;
-		} else if ("IOS".equals(Config.get("auto.platform"))) {
+		} else if (Config.IOS.equals(Config.get("auto.platform"))) {
 			if (iosDriver!=null) {
 				LOG.info("创建IOS Driver");
 				createIOSDriver();
@@ -48,7 +51,7 @@ public class Driver {
 		} else {
 			if (androidDriver==null) {
 				LOG.info("创建Android Driver");
-				createAndroidDriver(Config.get("auto.udid"),Config.get("auto.port"),Config.get("auto.appPackage"),Config.get("auto.appActivity"));
+				createAndroidDriver(autoDriver,Config.get("auto.udid"),Config.get("auto.port"),Config.get("auto.appPackage"),Config.get("auto.appActivity"));
 			}
 			return androidDriver;
 		}
@@ -74,13 +77,15 @@ public class Driver {
 		// 连接的物理设备的唯一设备标识
 		capabilities.setCapability("udid", "94122ad8");
 		iosDriver = new IOSDriver<WebElement>(capabilities);
+		width = iosDriver.manage().window().getSize().width;
+		height = iosDriver.manage().window().getSize().height;
 		return iosDriver;
 	}
 
-	private static AndroidDriver<?> createAndroidDriver(String udid, String port, String appPackage, String appActivity) {
+	private static AndroidDriver<?> createAndroidDriver(String autoDriver, String udid, String port, String appPackage, String appActivity) {
 		DesiredCapabilities capabilities = new DesiredCapabilities();
-		// 使用的自动化测试引擎：Appium(默认)或Selendroid
-		capabilities.setCapability("automationName", "Appium");
+		// 使用的自动化测试引擎：Appium(默认)或uiautomator2
+		capabilities.setCapability("automationName", autoDriver);
 		// 测试的手机操作系统：iOS,Android,FirefoxOS
 		capabilities.setCapability("platformName", "Android");
 		// driver的session超时时间，默认是60秒
@@ -94,7 +99,7 @@ public class Driver {
 		capabilities.setCapability("deviceName", "android Emulator");
 		// 连接的物理设备的唯一设备标识
 		// 通过adb devices命令查看模拟器的udid
-		capabilities.setCapability("udid", udid);
+		capabilities.setCapability(MobileCapabilityType.UDID,udid);
 		// 使用的是WINDOWS平台
 		capabilities.setCapability(CapabilityType.PLATFORM, "WINDOWS");
 		// 测试的web浏览器，如果是测app则忽略
@@ -105,17 +110,31 @@ public class Driver {
 		capabilities.setCapability("appActivity", appActivity);
 		// 支持中文输入
 		capabilities.setCapability("unicodeKeyboard", "True");
-		// 重置输入法为系统默认
-		capabilities.setCapability("resetKeyboard", "True"); // 重置输入法为系统默认
-
+		// 在设定了 unicodeKeyboard 关键字的 Unicode 测试结束后，重置输入法到原有状态。如果单独使用，将会被忽略。默认值 false
+		capabilities.setCapability("resetKeyboard", "True"); 
 		// 安装时不对apk进行重签名，设置很有必要，否则有的apk在重签名后无法正常使用
-		// caps.setCapability("noSign", "True");
+		capabilities.setCapability("noSign", "True");
+		//不要在会话前重置应用状态。默认值false。
+		capabilities.setCapability("noReset", "True");
 		try {
 			androidDriver = new AndroidDriver(new URL("http://127.0.0.1:" + port + "/wd/hub"), capabilities);
+			width = androidDriver.manage().window().getSize().width;
+			height = androidDriver.manage().window().getSize().height;
 		} catch (MalformedURLException e) {
 			LOG.error("连接Appium Server出错...",e);
 		}
 		return androidDriver;
 	}
-
+	
+	public static AndroidDriver<?> createAndroidDriver(DesiredCapabilities caps) {
+		try {
+			androidDriver = new AndroidDriver(new URL("http://127.0.0.1:4723/wd/hub"), caps);
+			width = androidDriver.manage().window().getSize().width;
+			height = androidDriver.manage().window().getSize().height;
+		} catch (MalformedURLException e) {
+			LOG.error("连接Appium Server出错...",e);
+		}
+		return androidDriver;
+	}
+	
 }
