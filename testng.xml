@@ -3,8 +3,7 @@
 <suite name="Suite" parallel="classes" thread-count="1">
 	<test verbose="2" preserve-order="true" name="TestDebug">
 		<classes>
-			<class name="com.crystal_optech.app.testcase.test1" />
-			<class name="com.crystal_optech.app.testcase.test2" />
+			<class name="com.kanmenzhu.app.testcase.TestCase" />
 		</classes>
 	</test> <!-- Test -->
 </suite> <!-- Suite -->
