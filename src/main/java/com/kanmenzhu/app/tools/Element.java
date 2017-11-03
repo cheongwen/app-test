@@ -46,12 +46,13 @@ public class Element {
 	}
 
 	/**
-	 * 根据配置获取元素查找方式及元素定位属性
-	 * 
+	 * 根据配置文件获取元素查找方式及元素定位属性
+	 * 若获取不到配置，则通过txt直接查找
 	 * @param ename
 	 * @return
 	 */
 	public MobileElement get(String ename) {
+		LOG.info("操作元素："+ename);
 		MobileElement me = null;
 		String list = ElementConfig.get(ename);
 		if (list != null) {
@@ -157,7 +158,8 @@ public class Element {
 	 * @param ename  element.properties文件中配置名称
 	 * @return
 	 */
-	public boolean isExist(int timeOut, String ename) {
+	public boolean isExist(int timeOut,String ename) {
+		LOG.debug("判断界面是否存在元素："+ename);
 		boolean flag = false;
 		By by = null;
 		String list = ElementConfig.get(ename);
