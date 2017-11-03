@@ -1,6 +1,11 @@
 # CanUI
 >此框架支持APP UI自动化
 >采用appium+maven+testng+spring搭建
+
+## 优势
+*通过配置的方式，可对app上每一个操作元素定义名称和查找方式
+*用例中使用定义名称进行获取和操作，避免ui变化频繁改动用例的麻烦
+*封装常用操作，用例更加简洁
  
 ## 结构说明
 ### 1.appium服务管理 /appium
@@ -16,7 +21,7 @@
 *	3.1 BaseCase.java 封装一些常用的操作，可在用例中直接调用
 ### 4.资源配置文件 /resources
 *	4.1 config.properties 配置运行环境，app属性及appium启动命令
-*	4.2 element.properties 配置app元素查找方式
+*	4.2 element.properties 配置app元素查找方式，如：跳过=id||com.kanmenzhu:id/image
 *	4.3 log4j.properties 运行日志配置
 ### 5.测试用例编写/test
 *	5.1 BaseCaseTest.java测试用例父类，测试用例继承此类，提供测试准备及测试收尾工作
