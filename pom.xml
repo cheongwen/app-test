@@ -18,6 +18,7 @@
 		<log4j.version>1.2.17</log4j.version>
 		<testng.version>6.11</testng.version>
 		<appium.version>4.1.2</appium.version>
+		<testng.filexml>testng.xml</testng.filexml>
 	</properties>
 
 	<dependencies>
@@ -28,13 +29,6 @@
 			<artifactId>java-client</artifactId>
 			<version>${appium.version}</version>
 		</dependency>
-		<!-- https://mvnrepository.com/artifact/org.seleniumhq.selenium/selenium-server 
-			<dependency> <groupId>org.seleniumhq.selenium</groupId> <artifactId>selenium-server</artifactId> 
-			<version>3.5.3</version> </dependency> -->
-		<!-- https://mvnrepository.com/artifact/org.seleniumhq.selenium/selenium-java 
-			<dependency> <groupId>org.seleniumhq.selenium</groupId> <artifactId>selenium-java</artifactId> 
-			<version>3.5.3</version> </dependency> -->
-
 		<!-- https://mvnrepository.com/artifact/org.seleniumhq.selenium/selenium-server-standalone -->
 		<dependency>
 			<groupId>org.seleniumhq.selenium</groupId>
@@ -100,4 +94,18 @@
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>2.18.1</version>
+				<configuration>
+					<suiteXmlFiles>
+						<suiteXmlFile>${testng.filexml}</suiteXmlFile>
+					</suiteXmlFiles>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
 </project>
