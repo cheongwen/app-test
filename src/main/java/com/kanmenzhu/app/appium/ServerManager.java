@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import com.kanmenzhu.app.tools.BaseTools;
+import com.kanmenzhu.app.tools.Config;
 
 /**
  * Appium Server 管理类
@@ -30,31 +31,45 @@ public class ServerManager {
 	 */
 	volatile static boolean error = false;
 	
+	/**
+	 * 停止Appium Server
+	 */
 	public void stop() {
 		kill();
 	}
 
+	/**
+	 * 启动Appium Server
+	 */
 	public void start() {
 		run();
 	}
 
+	/**
+	 * 重启Appium Server
+	 */
 	public void restart() {
 		kill();
 		run();
 	}
 	
+	/**
+	 * 运行Appium Server执行命令
+	 */
 	private void run() {
 		LOG.info("[Appium]Appium Start");
-		Properties prop = BaseTools.getProperties();
-		String command = prop.getProperty("appium.start");
-		if (StringUtils.isBlank(command)) {
-			//未获取到配置
-			command = "appium";
+		//获取配置文件config.properties中配置的启动appium的命令
+		String command = Config.get("windows.appium.start","appium");
+		if (isOSLinux()) {
+			LOG.info("运行平台：Linux");
+			command = Config.get("linux.appium.start","appium");
 		}
 		LOG.info("[CMD]"+command);
+		//新启线程执行命令
 		new Thread(new RunCommand(command)).start();
 		try {
 			Thread.sleep(1000);
+			//循环判断appium是否启动成功，如果成功则退出循环
 			while (!run) {
 				LOG.info("Wait the appium server start...");
 				if (run || error) {
@@ -75,11 +90,11 @@ public class ServerManager {
 
 	public void kill() {
 		LOG.info("[Appium]kill Appium Server");
-		Properties prop = BaseTools.getProperties();
-		String command = prop.getProperty("appium.stop");
-		if (StringUtils.isBlank(command)) {
-			//未获取到配置
-			command = "pkill -9 node";
+		//获取配置文件config.properties中配置的关闭appium的命令
+		String command = Config.get("windows.appium.stop","appium");
+		if (isOSLinux()) {
+			LOG.info("运行平台：Linux");
+			command = Config.get("linux.appium.stop","appium");
 		}
 		LOG.info("[CMD]"+command);
 //		new Thread(new RunCommand(command)).start();
@@ -90,5 +105,16 @@ public class ServerManager {
 			LOG.error("[Appium]关闭Appium Server出错",e);
 		}
 	}
+	
+	public static boolean isOSLinux() {
+        Properties prop = System.getProperties();
+
+        String os = prop.getProperty("os.name");
+        if (os != null && os.toLowerCase().indexOf("linux") > -1) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 	
 }
