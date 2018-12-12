@@ -64,6 +64,10 @@ public class ServerManager {
 			LOG.info("运行平台：Linux");
 			command = Config.get("linux.appium.start","appium");
 		}
+		if (isOSMac()){
+			LOG.info("运行平台：MAC");
+			command = Config.get("mac.appium.start","appium");
+		}
 		LOG.info("[CMD]"+command);
 		//新启线程执行命令
 		new Thread(new RunCommand(command)).start();
@@ -96,6 +100,10 @@ public class ServerManager {
 			LOG.info("运行平台：Linux");
 			command = Config.get("linux.appium.stop","appium");
 		}
+		if (isOSMac()){
+			LOG.info("运行平台：MAC");
+			command = Config.get("mac.appium.stop","appium");
+		}
 		LOG.info("[CMD]"+command);
 //		new Thread(new RunCommand(command)).start();
 		try {
@@ -108,7 +116,6 @@ public class ServerManager {
 	
 	public static boolean isOSLinux() {
         Properties prop = System.getProperties();
-
         String os = prop.getProperty("os.name");
         if (os != null && os.toLowerCase().indexOf("linux") > -1) {
             return true;
@@ -116,5 +123,15 @@ public class ServerManager {
             return false;
         }
     }
+
+	public static boolean isOSMac() {
+		Properties prop = System.getProperties();
+		String os = prop.getProperty("os.name");
+		if (os != null && os.toLowerCase().indexOf("mac") > -1) {
+			return true;
+		} else {
+			return false;
+		}
+	}
 	
 }

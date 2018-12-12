@@ -4,15 +4,12 @@ import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.Listeners;
 
 import com.kanmenzhu.app.tools.SuiteListener;
 import com.kanmenzhu.app.tools.Config;
 import com.kanmenzhu.app.tools.Driver;
-import com.kanmenzhu.app.tools.SpringConfig;
 import com.kanmenzhu.app.tools.TestListener;
 
 import io.appium.java_client.AppiumDriver;
@@ -25,8 +22,7 @@ import io.appium.java_client.AppiumDriver;
  */
 
 @Listeners({ TestListener.class, SuiteListener.class })
-@ContextConfiguration(classes = SpringConfig.class)
-public class BaseCaseTest extends AbstractTestNGSpringContextTests {
+public class BaseCaseTest{
 
 	private static final Logger LOG = LoggerFactory.getLogger(BaseCaseTest.class.getSimpleName());
 	

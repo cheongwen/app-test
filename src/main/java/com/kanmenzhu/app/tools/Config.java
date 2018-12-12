@@ -5,27 +5,47 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.URL;
+import java.util.Properties;
+
 /**
  * 根据配置文件获取系统配置属性
  * @author chang.lu
  *
  */
 
-@Component
-@Configuration
-@PropertySource(value = {"classpath:config.properties"},encoding="utf-8")
 public class Config {
 	
 	public final static String ANDROID = "Android";
 	public final static String IOS = "IOS";
-	public static String Platform;
-	
-	static Environment evn ;
-	
-	public Config(Environment evn1) {
-		evn = evn1;
-		this.Platform = evn.getProperty("auto.platform",ANDROID);
+	private static Properties prop;
+
+	static {
+		try {
+			prop = new Properties();
+			// 读取属性文件
+			InputStream in = Config.class.getClassLoader().getResourceAsStream("config.properties");
+			ClassLoader classLoader = Config.class.getClassLoader();
+			URL resource = classLoader.getResource("config.properties");
+			System.out.println(resource.getPath());
+			//InputStreamReader read = new InputStreamReader(in, "UTF-8");
+			prop.load(in); /// 加载属性列表
+			in.close();
+			//read.close();
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
 	}
+
 	
 	/**
 	 * 根据配置项名称获取配置参数，如果获取不到，则返回默认值
@@ -34,7 +54,7 @@ public class Config {
 	 * @return
 	 */
 	public static String get(String name,String defaultValue) {
-		return evn.getProperty(name, defaultValue);
+		return prop.getProperty(name, defaultValue);
 	}
 	
 	/**
@@ -43,7 +63,7 @@ public class Config {
 	 * @return
 	 */
 	public static String get(String name) {
-		return evn.getProperty(name);
+		return prop.getProperty(name);
 	}
 	
 }

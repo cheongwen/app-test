@@ -101,7 +101,7 @@ public class Driver {
 		// 通过adb devices命令查看模拟器的udid
 		capabilities.setCapability(MobileCapabilityType.UDID,udid);
 		// 使用的是WINDOWS平台
-		capabilities.setCapability(CapabilityType.PLATFORM, "WINDOWS");
+//		capabilities.setCapability(CapabilityType.PLATFORM, "WINDOWS");
 		// 测试的web浏览器，如果是测app则忽略
 		// capabilities.setCapability(MobileCapabilityType.BROWSER_NAME, "Chrome");
 		// 要启动的app包
@@ -117,7 +117,7 @@ public class Driver {
 		//不要在会话前重置应用状态。默认值false。
 		capabilities.setCapability("noReset", "True");
 		try {
-			androidDriver = new AndroidDriver(new URL("http://127.0.0.1:" + port + "/wd/hub"), capabilities);
+			androidDriver = new AndroidDriver(new URL("http://127.0.0.1:" + port + "/wd/hub/"), capabilities);
 			width = androidDriver.manage().window().getSize().width;
 			height = androidDriver.manage().window().getSize().height;
 		} catch (MalformedURLException e) {

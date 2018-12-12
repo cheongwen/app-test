@@ -1,9 +1,9 @@
 package com.kanmenzhu.app.tools;
 
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.PropertySource;
-import org.springframework.core.env.Environment;
-import org.springframework.stereotype.Component;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
 
 /**
  * 根据配置文件获取元素属性
@@ -11,15 +11,25 @@ import org.springframework.stereotype.Component;
  *
  */
 
-@Component
-@Configuration
-@PropertySource(value = {"classpath:element.properties"},encoding="utf-8")
 public class ElementConfig {
 
-	static Environment evn;
+	private static Properties prop;
 
-	public ElementConfig(Environment evn1) {
-		evn = evn1;
+	static {
+		try {
+			prop = new Properties();
+			// 读取属性文件
+			InputStream in = Object.class.getResourceAsStream("/element.properties");
+			prop.load(in); /// 加载属性列表
+			in.close();
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
 	}
 
 	/**
@@ -29,7 +39,7 @@ public class ElementConfig {
 	 * @return
 	 */
 	public static String get(String name) {
-		return evn.getProperty(name);
+		return prop.getProperty(name);
 	}
 	
 }

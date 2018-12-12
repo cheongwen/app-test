@@ -1,17 +1,14 @@
 package com.kanmenzhu.app.appium;
 
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.testng.annotations.Test;
 
 import com.kanmenzhu.app.tools.BaseTools;
 import com.kanmenzhu.app.tools.Driver;
-import com.kanmenzhu.app.tools.SpringConfig;
 
 import io.appium.java_client.AppiumDriver;
 
-@ContextConfiguration(classes = SpringConfig.class)
-public class ServerManagerTest extends AbstractTestNGSpringContextTests {
+
+public class ServerManagerTest {
 
 	@Test
 	public void start() {
