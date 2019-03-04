@@ -1,6 +1,6 @@
 # CanUI
 >此框架支持APP UI自动化
->采用appium+maven+testng+spring搭建
+>采用appium+maven+testng搭建
 
 ## 优势
 *	通过配置的方式，可对app上每一个操作元素定义名称和查找方式
